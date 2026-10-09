@@ -1,0 +1,76 @@
+shape (7043, 21) | missing 0 | duplicate rows 0 | duplicate IDs 0
+blank TotalCharges: 11 | their tenure: [0]
+churn rate 0.2654 | n = 7043
+numeric: ['tenure', 'MonthlyCharges', 'TotalCharges'] | categorical: 15 | passthrough: SeniorCitizen
+train (5634, 19) test (1409, 19) | churn rate train/test 0.2654 0.2654
+Logistic Regression: best params {'clf__C': 10} | CV AUC 0.8464 (+/- 0.0128) | train AUC 0.8500
+Decision Tree: best params {'clf__max_depth': 5, 'clf__min_samples_leaf': 60} | CV AUC 0.8323 (+/- 0.0102) | train AUC 0.8526
+Random Forest: best params {'clf__max_depth': 8, 'clf__min_samples_leaf': 15} | CV AUC 0.8478 (+/- 0.0096) | train AUC 0.8813
+Untuned tree: depth 22 leaves 1108 | train AUC 1.0 | CV AUC 0.6513
+depth, train, cv: [(1, np.float64(0.729), np.float64(0.729)), (2, np.float64(0.792), np.float64(0.791)), (3, np.float64(0.825), np.float64(0.816)), (4, np.float64(0.842), np.float64(0.826)), (5, np.float64(0.854), np.float64(0.829)), (6, np.float64(0.87), np.float64(0.824)), (8, np.float64(0.91), np.float64(0.787)), (10, np.float64(0.955), np.float64(0.746)), (14, np.float64(0.996), np.float64(0.683)), (20, np.float64(1.0), np.float64(0.659))]
+learning curve LR train/cv at full: 0.85 0.8464
+
+TEST METRICS (threshold 0.5)
+                      Accuracy  Precision  Recall     F1  ROC_AUC  PR_AUC
+Baseline (majority)     0.735      0.000   0.000  0.000    0.500   0.265
+Logistic Regression     0.806      0.659   0.559  0.605    0.841   0.629
+Decision Tree           0.796      0.641   0.524  0.576    0.829   0.620
+Random Forest           0.805      0.675   0.511  0.581    0.843   0.655
+Logistic Regression TN FP FN TP 927 108 165 209
+Decision Tree TN FP FN TP 925 110 178 196
+Random Forest TN FP FN TP 943 92 183 191
+
+CHAMPION by CV AUC: Random Forest
+cost-optimal threshold (train CV): 0.18 | F1-optimal: 0.3
+test at 0.5: {'Accuracy': 0.805, 'Precision': 0.675, 'Recall': 0.511, 'F1': 0.581, 'ROC_AUC': 0.843, 'PR_AUC': 0.655}
+test at thr: {'Accuracy': 0.671, 'Precision': 0.44, 'Recall': 0.874, 'F1': 0.585, 'ROC_AUC': 0.843, 'PR_AUC': 0.655}
+threshold CM TN FP FN TP 618 417 47 327
+test cost: default 0.5 = 1007.0 | tuned threshold = 652.0 | flag nobody = 1870.0 | flag everyone = 1035.0
+bootstrap AUC 95% CI: [0.82  0.864]
+
+Top LR coefficients:
+ MonthlyCharges                         -1.923
+tenure                                 -1.314
+InternetService_DSL                    -1.208
+Contract_Two year                      -0.904
+MultipleLines_No phone service         -0.824
+InternetService_No                     -0.671
+DeviceProtection_No internet service   -0.671
+OnlineSecurity_No internet service     -0.671
+SeniorCitizen                           0.150
+MultipleLines_Yes                       0.361
+PaperlessBilling_Yes                    0.368
+StreamingTV_Yes                         0.408
+StreamingMovies_Yes                     0.409
+Contract_Month-to-month                 0.447
+TotalCharges                            0.590
+InternetService_Fiber optic             1.172
+dtype: float64
+LR best C: 10
+RF importance top8:
+ Contract_Month-to-month           0.159
+tenure                            0.129
+TotalCharges                      0.109
+OnlineSecurity_No                 0.082
+InternetService_Fiber optic       0.061
+MonthlyCharges                    0.060
+TechSupport_No                    0.056
+PaymentMethod_Electronic check    0.048
+dtype: float64
+
+Error analysis
+            n  tenure  monthly
+outcome                      
+FN        47    35.5     61.0
+FP       417    24.3     73.6
+TN       618    46.4     52.4
+TP       327    13.7     74.5
+Contract  Month-to-month  One year  Two year
+outcome                                     
+FN                  0.43      0.38      0.19
+FP                  0.85      0.13      0.02
+TN                  0.15      0.34      0.52
+TP                  0.94      0.06      0.00
+FN: share month-to-month 0.43 | n 47
+
+figures saved
